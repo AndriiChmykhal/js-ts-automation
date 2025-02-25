@@ -7,7 +7,7 @@ abstract class Person {
         this.email = email;
     }
 
-    protected abstract displayInfo(): string;
+    public abstract displayInfo(): string;
 }
 
 export class FullAddress {
