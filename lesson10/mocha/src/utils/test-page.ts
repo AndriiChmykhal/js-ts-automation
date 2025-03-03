@@ -1,7 +1,8 @@
 import { Page } from '../pages/page';
 
-export function testPage(page: Page): void {
-    console.log('Testing page...');
-    console.log(page.open());
-    console.log(page.getTitle());
+export function testPage(page: Page): { message: string; title: string } {
+    return {
+        message: 'Testing page...',
+        title: page.getTitle()
+    };
 }

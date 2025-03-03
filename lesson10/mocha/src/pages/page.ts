@@ -12,6 +12,6 @@ export abstract class Page {
     }
 
     public getTitle(): string {
-        return `Title is ${this.title}`;
+        return this.title;
     }
 }

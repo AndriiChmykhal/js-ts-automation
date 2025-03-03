@@ -1,21 +1,52 @@
 import { testPage } from '../src/utils/test-page';
-import { Page } from '../src/pages/page';
 import { strict as assert } from 'assert';
-import sinon from 'sinon';
+import { DashboardPage } from '../src/pages/dashboard-page';
+import { LoginPage } from '../src/pages/login-page';
 
 describe('testPage function', () => {
-    it('should call open and getTitle', () => {
-        const mockPage = {
-            open: () => 'Mock Opened',
-            getTitle: () => 'Mock Title'
-        } as unknown as Page;
+    it('should return open message and title for DashboardPage', () => {
+        // Arrange
+        const dashboardPage = new DashboardPage();
 
-        const consoleLogSpy = sinon.spy(console, 'log');
+        // Act
+        const result = testPage(dashboardPage);
 
-        testPage(mockPage);
-        assert(consoleLogSpy.calledWith('Testing page...'));
-        assert(consoleLogSpy.calledWith('Mock Title'));
+        // Assert
+        assert.deepEqual(result, {
+            message: 'Testing page...',
+            title: dashboardPage.getTitle()
+        });
+    });
 
-        consoleLogSpy.restore();
+    it('should return open message and title for LoginPage', () => {
+        // Arrange
+        const loginPage = new LoginPage();
+
+        // Act
+        const result = testPage(loginPage);
+
+        // Assert
+        assert.deepEqual(result, {
+            message: 'Testing page...',
+            title: loginPage.getTitle()
+        });
+    });
+});
+
+describe('Page class', () => {
+    it('should store and return the correct title', () => {
+        // Arrange
+        const page = new DashboardPage();
+
+        // Act & Assert
+        assert.equal(page.getTitle(), 'Welcome to your Dashboard');
+    });
+
+    it('should return the correct open message', () => {
+        // Arrange
+        const page = new DashboardPage();
+
+        // Act & Assert
+        assert.equal(page.open(), 'Opening /dashboard');
     });
 });
