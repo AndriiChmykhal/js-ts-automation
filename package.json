@@ -23,6 +23,7 @@
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
     "eslint": "^9.21.0",
-    "eslint-plugin-unicorn": "^57.0.0"
+    "eslint-plugin-unicorn": "^57.0.0",
+    "ts-sinon": "^2.0.2"
   }
 }
