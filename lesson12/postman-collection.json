@@ -1,0 +1,291 @@
+{
+  "info": {
+    "_postman_id": "87aaea65-ef6c-4a2e-aa6e-ebd4d8018d68",
+    "name": "Random Jokes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "36273938"
+  },
+  "item": [
+    {
+      "name": "Random Joke",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonResponse = pm.response.json();",
+              "const joke = jsonResponse[0];",
+              "",
+              "",
+              "pm.test('Status code is 200', function() {",
+              "    pm.response.to.have.status(200)",
+              "});",
+              "",
+              "pm.test('Response is JSON', function() {",
+              "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json')",
+              "});",
+              "",
+              "pm.test(\"Response contains required joke fields\", function () {",
+              "    pm.expect(joke).to.have.property(\"setup\");",
+              "    pm.expect(joke).to.have.property(\"punchline\");",
+              "});",
+              "",
+              "pm.test('Joke is a non-empty string', function() {",
+              "    pm.expect(joke.setup).to.be.a('string').and.to.have.length.above(0);",
+              "    pm.expect(joke.punchline).to.be.a('string').and.to.have.length.above(0);",
+              "});",
+              "",
+              "pm.environment.set(\"joke_id\", joke.id);",
+              "console.log(\"Stored joke ID:\", joke.id);"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/jokes/random",
+          "host": ["{{base_url}}"],
+          "path": ["jokes", "random"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Fetch joke by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonResponse = pm.response.json();",
+              "const jokeId = pm.environment.get(\"joke_id\");",
+              "",
+              "pm.test(`Verify joke by ID`, function () {",
+              "    pm.expect(jsonResponse).to.be.an(\"object\");",
+              "    pm.expect(jsonResponse).to.have.property(\"id\", parseInt(jokeId));",
+              "    pm.expect(jsonResponse).to.have.property(\"type\").that.is.a(\"string\");",
+              "    pm.expect(jsonResponse).to.have.property(\"setup\").that.is.a(\"string\");",
+              "    pm.expect(jsonResponse).to.have.property(\"punchline\").that.is.a(\"string\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/jokes/{{joke_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["jokes", "{{joke_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Schema validation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonResponse = pm.response.json();",
+              "",
+              "const schema = {",
+              "    \"type\": \"array\",",
+              "    \"items\": {",
+              "        \"type\": \"object\",",
+              "        \"properties\": {",
+              "            \"type\": { \"type\": \"string\" },",
+              "            \"setup\": { \"type\": \"string\" },",
+              "            \"punchline\": { \"type\": \"string\" },",
+              "            \"id\": { \"type\": \"integer\" }",
+              "        },",
+              "        \"required\": [\"type\", \"setup\", \"punchline\", \"id\"]",
+              "    }",
+              "};",
+              "",
+              "pm.test('Response matches expected schema', function () {",
+              "    pm.expect(jsonResponse).to.be.an('array');",
+              "    pm.response.to.have.jsonSchema(schema);",
+              "})",
+              "",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/jokes/random/10",
+          "host": ["{{base_url}}"],
+          "path": ["jokes", "random", "10"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Joke types",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonResponse = pm.response.json();",
+              "",
+              "pm.test('Verify joke types and store them', function() {",
+              "    pm.expect(jsonResponse).to.be.an('array');",
+              "    pm.expect(jsonResponse).to.include.members(['general', 'knock-knock', 'programming', 'dad']);",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/types",
+          "host": ["{{base_url}}"],
+          "path": ["types"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Dad jokes",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonResponse = pm.response.json();",
+              "",
+              "pm.test(\"All jokes should be of dad type\", function () {",
+              "    pm.expect(jsonResponse).to.be.an('array');",
+              "",
+              "    jsonResponse.forEach((joke) => {",
+              "        pm.expect(joke).to.have.property('type', 'dad');",
+              "    })",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/jokes/dad/ten",
+          "host": ["{{base_url}}"],
+          "path": ["jokes", "dad", "ten"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Five jokes in response",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonResponse = pm.response.json();",
+              "",
+              "pm.test('Response contains 5 jokes', function () {",
+              "    pm.expect(jsonResponse.length, 'Expected 5 jokes in response').to.equal(5);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/jokes/random/5",
+          "host": ["{{base_url}}"],
+          "path": ["jokes", "random", "5"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Response time",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Response time is less than 500ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/jokes/random/10",
+          "host": ["{{base_url}}"],
+          "path": ["jokes", "random", "10"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3005",
+      "type": "string"
+    }
+  ]
+}
