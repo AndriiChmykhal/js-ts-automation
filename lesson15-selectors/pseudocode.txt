@@ -1,0 +1,19 @@
+
+TC1
+Amazon.co.uk - Find a Laptop 
+1. setKeys 'laptop' in #twotabsearchtextbox
+2. click on #nav-search-submit-button
+3. wait div.s-result-list
+
+TC2
+Amazon.co.uk - Filter by price
+1. //span[@class="a-dropdown-label" and contains(text(), "Sort by")] — click
+2. //a[@id="s-result-sort-select_2"] — click
+3. wait //div[contains(@class, "s-result-list")]
+
+TC3
+Amazon.co.uk - Add an item to the basket
+1. click div.s-result-list div.s-result-item:first-child h2 a //the first item in the list
+2. wait button#add-to-cart-button
+3. click on button#add-to-cart-button
+4. wait div#attachDisplayAddBaseAlert
