@@ -3,23 +3,25 @@ import { AmazonHomePage } from '../src/pages/amazon-home-page';
 
 
 test.describe('Amazon homepage', () => {
-    test('load homepage and show search input', async ({ page }) => {
-        const amazon = new AmazonHomePage(page);
+    let amazon: AmazonHomePage;
+
+    test.beforeEach(async ({ page }) => {
+        amazon = new AmazonHomePage(page);
         await amazon.navigate();
-        await expect(amazon.searchInputElement).toBeVisible();
     });
 
-    test('return results when searching for an item', async ({ page }) => {
-        const amazon = new AmazonHomePage(page);
-        await amazon.navigate();
+    test('load homepage and show search input', async () => {
+        await expect(amazon.searchInput).toBeVisible();
+    });
+
+    test('return results when searching for an item', async () => {
         await amazon.searchFor('iPhone');
         await expect(amazon.resultsElement).toBeVisible();
     });
 
-    test('change URL after search', async ({ page }) => {
-        const amazon = new AmazonHomePage(page);
-        await amazon.navigate();
+    test('return results containing the keyword', async () => {
         await amazon.searchFor('book');
-        await expect(page).toHaveURL(/s?k=book/);
+        const resultTitles = amazon.resultsElement.locator('[data-asin]').first();
+        await expect(resultTitles.first()).toContainText(/book/i);
     });
 });
